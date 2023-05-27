@@ -1,9 +1,36 @@
-#myTimings= Read Table from semicolon-separated file: "/Users/weg/Desktop/test (Transcribed on 13-abr-2023 20-53-07).srt"
+
+############################################################################################################################################################################################
+
+# Parse .srt to TextGrid (not multiline srt) 
+
+############################################################################################################################################################################################
+# DESCRIPTION
+# this script is design to convert .srt files resulting from whisper and, specially, https://www.softcatala.org/transcripcio/ to TextGrid files in order to work in Praat with those transcriptions.
+#
+# it will fail to transcribe usual srt files to textgrid because those are usually multiline and this code expects to have only one line in each frame.
+#
+# INSTRUCTIONS
+# Write the path (directory or folder) where you have your srt files stored at the form that will appear and it will create 1 Textgrid per file.
+
+#
+#						CREDITS
+# Feedback is always welcome, please if you notice any bugs or come up with anything that can improve this script, let me know!
+# 	
+# Wendy Elvira-García 
+# wendyelvira@ub.edu // www.wendyelvira.ga
+# first version: october 2023
+############################################################################################################################################################################################
+
+
+# form
 form From srt to TextGrid
 	sentence Folder /Users/weg/Desktop/
 endform
 
 
+
+
+# creating the loop
 files = Create Strings as file list: "list", folder$ +"/" + "*.srt"
 numberOfFiles = Get number of strings
 
@@ -12,6 +39,8 @@ for file to numberOfFiles
 	file$ = Get string: file
 	base$ = file$- ".srt"
 	path$= folder$ + "/" + file$
+
+	# this does the trick, check it below
 	@srtToGrid(path$)
 
 	selectObject: srtToGrid.myTextGrid
@@ -24,7 +53,7 @@ endfor
 
 
 
-
+## procedure that I use to parse
 
 procedure srtToGrid: .path$
 	myTimings= Read Strings from raw text file: .path$
