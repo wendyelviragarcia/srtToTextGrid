@@ -24,7 +24,7 @@
 
 # form
 form From srt to TextGrid
-	sentence Folder /Users/weg/Desktop/
+	sentence Folder C:\Users\labfonub99\Desktop\test
 endform
 
 
@@ -66,29 +66,53 @@ procedure srtToGrid: .path$
 	word$ = extractWord$(lastData$, "-->")
 	@hourToSecs(word$)
 
-
-	.myTextGrid= Create TextGrid: 0, hourToSecs.time, "ort", ""
+	totalTime = hourToSecs.time
+	.myTextGrid= Create TextGrid: 0, totalTime, "ort", ""
 
 	# for each frame find the timestamp and the content and insert a boundary
 
 
 	numberOfIntervals = nRows/4
 	index=1
+	lastTime = 0
 	for n to numberOfIntervals
 		selectObject: myTimings
-		wholetimeStamp$= Get string: index+1
+		wholetimeStamp$= Get string: index + 1
 		wholetimeStamp= number (wholetimeStamp$)
 		timeStamp$ = extractWord$(wholetimeStamp$, "-->")
 		@hourToSecs(timeStamp$)
+
+		if hourToSecs.time = lastTime
+			hourToSecs.time = hourToSecs.time+0.01
+		endif 
 		text$ = Get string: index+2
 
 		selectObject: .myTextGrid
 
+
+		
+
 		if n < numberOfIntervals
-			Insert boundary: 1, hourToSecs.time
+			isBoundary = Get interval boundary from time: 1, hourToSecs.time
+			if isBoundary = 0
+				Insert boundary: 1, hourToSecs.time
+				Set interval text: 1, n, text$
+				lastTime = hourToSecs.time
+				else 
+				Insert boundary: 1, hourToSecs.time+0.01
+				Set interval text: 1, n, text$
+				lastTime = hourToSecs.time+0.01
+			endif
 		endif
-		Set interval text: 1, n, text$
+
+		if n = numberOfIntervals
+				Insert boundary: 1, totalTime-0.01
+				Set interval text: 1, n, text$
+				lastTime = hourToSecs.time
+				
+		endif
 		index= index+4
+		
 	endfor
 endproc
 
@@ -104,8 +128,8 @@ procedure hourToSecs: .myTime$
 	.myTime$=replace$ (.myTime$, ",", ".", 1)
 	largo= length (.myTime$)
 
-	.hours$ = mid$(.myTime$ , 2, 2)
-	.minutes$= mid$(.myTime$ , 5, 2)
+	.hours$ = mid$(.myTime$ , 1, 2)
+	.minutes$= mid$(.myTime$ , 4, 2)
 	.seconds$= mid$(.myTime$ , 7, largo)
 
 	.hours= number(.hours$)
