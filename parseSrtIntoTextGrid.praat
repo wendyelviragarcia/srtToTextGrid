@@ -1,4 +1,3 @@
-
 ############################################################################################################################################################################################
 
 # Parse .srt to TextGrid (not multiline srt) 
@@ -17,7 +16,7 @@
 # Feedback is always welcome, please if you notice any bugs or come up with anything that can improve this script, let me know!
 # 	
 # Wendy Elvira-García 
-# wendyelvira@ub.edu // www.wendyelvira.ga
+# wendyelvira@ub.edu // https://www.ub.edu/phoneticslaboratory/sites/wendyelvira/
 # first version: May 2023
 ############################################################################################################################################################################################
 
@@ -51,8 +50,6 @@ endfor
 
 
 
-
-
 ## procedure that I use to parse
 
 procedure srtToGrid: .path$
@@ -81,36 +78,29 @@ procedure srtToGrid: .path$
 		wholetimeStamp= number (wholetimeStamp$)
 		timeStamp$ = extractWord$(wholetimeStamp$, "-->")
 		@hourToSecs(timeStamp$)
-
-		if hourToSecs.time = lastTime
-			hourToSecs.time = hourToSecs.time+0.01
-		endif 
+	
 		text$ = Get string: index+2
-
 		selectObject: .myTextGrid
 
-
-		
-
 		if n < numberOfIntervals
-			isBoundary = Get interval boundary from time: 1, hourToSecs.time
-			if isBoundary = 0
-				Insert boundary: 1, hourToSecs.time
-				Set interval text: 1, n, text$
-				lastTime = hourToSecs.time
-				else 
-				Insert boundary: 1, hourToSecs.time+0.01
-				Set interval text: 1, n, text$
-				lastTime = hourToSecs.time+0.01
-			endif
+			isBoundary = Get interval boundary from time: 1, hourToSecs.time		
+
+			repeat
+       			hourToSecs.time = hourToSecs.time + 0.001
+       			isBoundary = Get interval boundary from time: 1, hourToSecs.time
+    		until isBoundary = 0
+
+			Insert boundary: 1, hourToSecs.time
+			Set interval text: 1, n, text$
+
 		endif
+
 
 		if n = numberOfIntervals
 				Insert boundary: 1, totalTime-0.01
 				Set interval text: 1, n, text$
-				lastTime = hourToSecs.time
-				
 		endif
+		
 		index= index+4
 		
 	endfor
