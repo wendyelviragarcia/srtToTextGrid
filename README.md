@@ -1,4 +1,4 @@
-# srtToTextGrid
+# srtToTextgrid
 srt to TextGrid is a Praat script that parses srt files that come from transcriptions from Whisper generated with [Buzz](https://github.com/chidiwilliams/buzz) to Textgrids files.
 
 ## Instructions
