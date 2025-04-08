@@ -45,20 +45,23 @@ for file to numberOfFiles
 	selectObject: srtToGrid.myTextGrid
 
 	Save as text file: folder$ + "/" + base$ + ".TextGrid"
+	removeObject: srtToGrid.myTextGrid
 endfor
 
-
+removeObject: files
+writeInfoLine: "Completed"
+appendInfoLine: "Texgrids to be found at:" + folder$
 
 
 ## procedure that I use to parse
 
 procedure srtToGrid: .path$
-	myTimings= Read Strings from raw text file: .path$
+	myTimings = Read Strings from raw text file: .path$
 
 	# let's create the textgrid with the last info of the srt
 	nRows=Get number of strings
 	lastData$ = Get string: nRows-2
-	echo 'lastData$'
+	#echo 'lastData$'
 
 	word$ = extractWord$(lastData$, "-->")
 	@hourToSecs(word$)
@@ -104,6 +107,8 @@ procedure srtToGrid: .path$
 		index= index+4
 		
 	endfor
+
+	removeObject: myTimings
 endproc
 
 
